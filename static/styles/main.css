@@ -1,0 +1,293 @@
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap");
+@import url(./fontall.css);
+
+:root {
+	--main: #3cddaa;
+	--main-hl: #78f0ca;
+	--main-dark: #40cda0;
+	--sub: #3cddaa36;
+	--txt: #232931;
+	--txtgr: #9e9e9e;
+	--bg: #f9f9f9;
+	--gr: #eeeeee;
+	--gr-dark: #677a71;
+	--deact: #ebebeb;
+	--bg-dark: #393e46;
+	--wrn: #ff8b8b;
+	--gr-wrn: #ff8b8ba9;
+	--sub-wrn: #ff8b8b5d;
+	--bl: rgba(108, 177, 250, 0.552);
+}
+
+body {
+	font-family: "Noto Sans KR", sans-serif;
+	background: var(--bg);
+	color: var(--txt);
+	font-size: 16px;
+	font-weight: 400;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-use-select: none;
+	user-select: none;
+	-ms-overflow-style: none;
+}
+
+
+/* commons */
+
+.container {
+	margin: 0 auto;
+	max-width: 90vw;
+}
+.shd {
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+}
+.tit {
+	font-family: "NanumSquareNeo", sans-serif;
+	font-size: 1.25rem;
+}
+
+.btn {
+	background: var(--main);
+	padding: 0.9rem 1.2rem;
+	border-radius: 15px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: 0.3s ease-out;
+}
+.btn:hover {
+	background: var(--main-hl);
+}
+
+.box {
+	background: var(--bg);
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 20px;
+	padding: 1.5rem;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.task {
+	background: var(--sub);
+	border-radius: 30px;
+	padding: 0.3rem 1.2rem;
+}
+.task.activate {
+	background: var(--bg);
+	border: 2px solid var(--main);
+}
+.task.deactivate {
+	background: var(--deact);
+	color: var(--txtgr);
+}
+
+/* header */
+#header {
+	background: var(--bg);
+	box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+	padding: 1rem 2rem;
+}
+
+#header .navi {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+#header .logo {
+	width: 120px;
+}
+
+#header .navi .gnb-area .gnb {
+	display: flex;
+}
+#header .navi .gnb-area .gnb li {
+	margin-right: 0.6rem;
+	transition: 0.5s;
+}
+#header .navi .gnb-area .gnb li:last-child {
+	margin-right: 0;
+}
+#header .navi .gnb-area .gnb li a {
+	padding: 0.3rem;
+	position: relative;
+}
+#header .navi .gnb-area .gnb li a::after {
+	content: "";
+	display: block;
+	background: var(--txt);
+	width: 0%;
+	height: 3px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	transition: 0.2s;
+}
+#header .navi .gnb-area .gnb li:hover a,
+#header .navi .gnb-area .gnb li.activate a {
+	font-weight: 800;
+}
+#header .navi .gnb-area .gnb li:hover a::after,
+#header .navi .gnb-area .gnb li.activate a::after {
+	width: 100%;
+}
+#header .navi .user-area {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#header .navi .user-area .user-prof {
+	align-content: center;
+	border-radius: 50%;
+	height: 30px;
+	overflow: hidden;
+	margin-right: 0.5rem;
+}
+#header .navi .user-area a {
+	vertical-align: middle;
+	margin-left: 0.2rem;
+	margin-right: 0.6rem;
+}
+#header .navi .user-area .logout-btn span {
+	font-size: 1.5rem;
+	vertical-align: middle;
+	transition: 0.2s ease;
+}
+#header .navi .user-area .logout-btn:hover span {
+	color: var(--main);
+}
+
+/* footer */
+footer {
+	margin-top: 2rem;
+	text-align: center;
+	position: relative;
+	bottom: 0;
+}
+
+
+/* 오류 message 창 */
+
+#message-card {
+	position: absolute;
+	top: 5rem;
+	right: 1rem;
+	width: 25vw;
+	z-index: 50;
+	background-color: var(--bg);
+	text-align: end;
+	border: 2px solid var(--sub-wrn);
+}
+
+#message-card .message-header {
+	color: var(--wrn);
+	padding-bottom: 10px;
+	font-weight: 500;
+	border-bottom: 2px solid var(--gr);
+	letter-spacing: -1px;
+	text-align: start;
+}
+
+#message-card .noti-icon {
+	font-weight: 700;
+	font-size: 20px;
+	vertical-align: text-bottom;
+	margin-right: 5px;
+}
+
+#message-card .message-text {
+	margin: 1rem 0;
+	text-align: start;
+}
+
+#message-card .message-button {
+	text-align: end;
+	color: var(--bg);
+	padding: 7px 10px;
+	/* font-weight: 700; */
+	letter-spacing: -1px;
+	border-radius: 5px;
+	background-color: var(--wrn);
+}
+
+
+/* light,dark-mode toggle */
+
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
+	margin: 1rem 48vw;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--main);
+  transition: .4s;
+  border-radius: 30px;
+}
+
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 20px;
+  left: 0.3em;
+  bottom: 0.3em;
+  background-color: rgb(245, 245, 217);
+  transition: .4s;
+}
+
+.switch input:checked + .slider {
+  background-color: var(--bg-dark);
+}
+
+.switch input:focus + .slider {
+  box-shadow: 0 0 1px var(--sub);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(1.5em);
+}
+
+.switch .slider::after {
+  width: 20px;
+  height: 20px;
+  left: 20%;
+  top: 10%;
+  border-radius: 50%;
+  position: absolute;
+  content: "";
+  background-color: var(--main);
+  transition: ease 0.4s;
+}
+
+.switch input:checked + .slider::after {
+  left: 80%;
+  width: 0px;
+  height: 0px;
+}
+
+
+/* darkmode class 추가 */

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="../../../static/styles/init.css">
+  <link rel="stylesheet" href="../../../static/styles/create_today.css">
+  <title>create_today</title>
+</head>
+<body>
+    <!-- section -->
+    <section class="today-section">
+        <div class="container">
+            <div class="box-area">
+                <div class="box">
+                    <!-- today todo Form -->
+                    <form action="" method="post" id="today-form">
+                        <input type="text" name="" value="task title" class="today_task-title">
+                        <div class="timepicker-area">
+                            <div class="starttime-select">     
+                                <label for="starttime-pick">시작 시간</label>
+                                <input type="text" id="starttime-pick" value="" name="start" class="time-pickable" readonly>
+                            </div>
+                            <div class="time-tilder">~</div>
+                            <div class="endtime-select">
+                                <label for="endtime-pick">종료 시간</label>
+                                <input type="text" id="endtime-pick" value="" name="end" class="time-pickable" readonly>
+                            </div>
+                        </div>
+                        <textarea name="" class="today_task-textarea" cols="30" rows="10"></textarea>
+                        <div class="keyword-box"><span>keyword</span></div>
+                        <fieldset class="today-task-fileadd">
+                            <legend>Image/File</legend>
+                            <label for="today-task-imgfile">
+                                <div class="loaded-file"></div>
+                                <div class="upload-none">
+                                    <span class="attach_img-icon material-symbols-outlined">imagesmode</span>
+                                    사진/파일을 첨부하세요
+                                </div>
+                            </label>
+                            <input type="file" name="todoimg" class="today_task-img" id="today-task-imgfile">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- file input 표시 -->
+    <script>
+        let uploadFile = document.getElementById("today-task-imgfile");
+        let loadedFile = document.querySelector(".loaded-file")
+        const noneFile = document.querySelector(".upload-none")
+        
+        loadedFile.style.display = "none";
+
+        uploadFile.onchange = () => {
+            noneFile.style.display = "none";
+            loadedFile.style.display = "block";
+            let uploadFileName = uploadFile.files[0].name;
+            loadedFile.innerText = `${uploadFileName}`;
+        }
+       
+    </script>
+    <!-- section -->
+    <script>
+        // const title = document.querySelector('.today_task-title')
+        // title.addEventListener('click', () => {
+        //     title.style.color = "blue";
+        //     title.style.transition = "0.3s";
+        //     setTimeout(() => {
+        //         title.style.color = "var(--txt)";
+        //     }, 3000);
+        // });
+        function activate() {
+            document.head.insertAdjacentHTML("beforeend", `
+                <style>
+               
+                    .time-picker {
+                        position: absolute;
+                        display: inline-block;
+                        padding: 10px 0;
+                        padding-inline: 50px;
+                        background: var(--main);
+                        border-radius: 10px;
+                        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+                        width: 400px;
+                        margin-top: 10px;
+                        text-align: center;
+                        transition: .5s;
+                    }
+
+                    .hour-picker__button {
+                        position: relative;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        appearance: none;
+                        outline: none;
+                        text-align: center;
+                        border: 2px solid var(--main);
+                        border-radius: 6px;
+                        padding: 6px 10px;
+                        background: var(--bg);
+                        cursor: pointer;
+                        font-family: 'NanumSquareNeo', sans-serif;
+                        font-size: 20px;
+                        font-weight: 900;
+                    }
+
+                    .minute-picker__button {
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        appearance: none;
+                        outline: none;
+                        text-align: center;
+                        border: 2px solid var(--main);
+                        border-radius: 6px;
+                        padding: 6px 10px;
+                        background: var(--bg);
+                        cursor: pointer;
+                        font-family: 'NanumSquareNeo', sans-serif;
+                        font-size: 20px;
+                        font-weight: 900;
+                    }
+
+                    .hour-picker__select{
+                        position: absolute;
+                        overflow: scroll;
+                        height: 200px;
+                    }
+
+                    
+                </style>
+            `);
+
+            document.querySelectorAll(".time-pickable").forEach(timePickable => {
+                let activePicker = null;
+
+                timePickable.addEventListener("focus", () => {
+                    if (activePicker) return;
+
+                    activePicker = show(timePickable);
+
+                    const onClickAway = ({ target }) => {
+                        if (
+                            target === activePicker
+                            || target === timePickable
+                            || activePicker.contains(target)
+                        ) {
+                            return;
+                        }
+
+                        document.removeEventListener("mousedown", onClickAway);
+                        document.body.removeChild(activePicker);
+                        activePicker = null;
+                    };
+
+                    document.addEventListener("mousedown", onClickAway);
+                });
+            });
+        }
+
+        function show(timePickable) {
+            const picker = buildPicker(timePickable);
+            const { bottom: top, left } = timePickable.getBoundingClientRect();
+
+            picker.style.top = `${top}px`;
+            picker.style.left = `${left}px`;
+
+            document.body.appendChild(picker);
+
+            return picker;
+        }
+
+        function buildPicker(timePickable) {
+            const picker = document.createElement("div");
+            const hourOptions = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map(numberToOption);
+            const minuteOptions = [0, 10, 20, 30, 40, 50].map(numberToOption);
+
+            picker.classList.add("time-picker");
+            picker.innerHTML = `
+                <button type="button" class="hour-picker__button">06</button>
+                <ul class="hour-picker__select">
+                    ${hourOptions.join("")}
+                </ul>
+                    :
+                <button type="button" class="minute-picker__button">00</button>
+                <ul class="minute-picker__select">
+                    ${minuteOptions.join("")}
+                </ul>
+            `;
+
+            const selects = getSelectsFromPicker(picker);
+
+            // selects.hour.addEventListener("change", () => timePickable.value = getTimeStringFromPicker(picker));
+            // selects.minute.addEventListener("change", () => timePickable.value = getTimeStringFromPicker(picker));
+
+            if (timePickable.value) {
+                const { hour, minute } = getTimePartsFromPickable(timePickable);
+
+                selects.hour.value = hour;
+                selects.minute.value = minute;
+            }
+
+            return picker;
+        }
+
+        function getTimePartsFromPickable(timePickable) {
+            const pattern = /^(\d+):(\d+)$/;
+            const [hour, minute] = Array.from(timePickable.value.match(pattern)).splice(1);
+
+            return {
+                hour,
+                minute,
+            };
+        }
+
+        function getSelectsFromPicker(timePicker) {
+            const [hour, minute] = timePicker.querySelectorAll(".time-picker__select");
+
+            return {
+                hour,
+                minute,
+            };
+        }
+
+        function getTimeStringFromPicker(timePicker) {
+            const selects = getSelectsFromPicker(timePicker);
+
+            return `${selects.hour.value}:${selects.minute.value}`;
+        }
+
+        function numberToOption(number) {
+            const padded = number.toString().padStart(2, "0");
+            // const selectboxOption = document.createElement("ul");
+            // selectboxOption.classList.add("selectbox-option")
+
+            return `<li><button type="button" onclick="changeTime(this)">${padded}</button></li>`;
+        }
+        
+        const hourPicker = document.querySelector(".hour-picker__button")
+        const startPicker = document.getElementById("starttime-pick")
+        const endPicker = document.getElementById("endtime-pick")
+        const minutePicker = document.querySelector(".minute-picker__button")
+        
+        startPicker.addEventListener('click', changeTime());
+        endPicker.addEventListener('click', changeTime()); 
+
+        function changeTime(e) {
+            console.log(e)
+            if (e.parentNode.parentNode.classList == "hour-picker__select") {
+                hourPicker.innerText = e.innerText
+            } else {
+                minutePicker.innerText = e.innerText
+            }
+
+            if (startPicker) {
+                startPicker.value = hourPicker.innerText + ":" + minutePicker.innerText
+            } else {
+                endPicker.value = hourPicker.innerText + ":" + minutePicker.innerText
+            }
+        }
+
+        activate();
+    </script>
+</body>
+</html>

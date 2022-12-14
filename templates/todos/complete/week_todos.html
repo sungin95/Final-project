@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="container" id="week">
+  <div class="lnb-area">
+    <div class="lnb">
+      <input type="radio" name="tabmenu" id="tab1" class="tabs" checked>
+      <label for="tab1" class="tab">
+        <a href="{% url 'todos:week' %}">WEEK</a>
+      </label>
+      <input type="radio" name="tabmenu" id="tab2" class="tabs">
+      <label for="tab2" class="tab">
+        <a href="{% url 'todos:today' %}">TODAY</a>
+      </label>
+      <input type="radio" name="tabmenu" id="tab3" class="tabs">
+      <label for="tab3" class="tab">
+        <a href="{% url 'todos:read_all' %}">ALL</a>
+      </label>
+      <span class="glider"></span>
+    </div>
+    <div class="week-btn-area">
+      <a href="" class="week-btn" data-is-prev="true" data-week-cnt="-1">
+        <span class="material-symbols-outlined  week-btn-prev">
+          arrow_back_ios
+        </span>
+        <span class="prev-week">prev</span>
+      </a>
+      <a href="" class="week-btn" data-is-prev="false" data-week-cnt="1">
+        <span class="next-week">next</span>
+        <span class="material-symbols-outlined week-btn-next">
+          arrow_forward_ios
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="box-area week-area">
+
+    {% for todo_list in time_list %}
+    <div class="box">
+      <h3 class="tit shd weekday">weekday
+      </h3>
+      <ul class="task-list">
+        {% for todo in todo_list %}
+        <li class="task">
+          <p class="task-cont">{{todo.title}}</p>
+          {% if todo.is_completed %}
+          <input type="checkbox" name="task-chb{{ todo.id }}" id="task-chb{{ todo.id }}" checked="checked">
+          {% else %}
+          <input type="checkbox" name="task-chb{{ todo.id }}" id="task-chb{{ todo.id }}">
+          {% endif %}
+          <label for="task-chb{{ todo.id }}" class="task-chb"></label>
+        </li>
+        {%empty%}
+        <li class="task task-empty">
+          <p class="task-cont"> 작성된 할일이 없어요 :(</p>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock body %}

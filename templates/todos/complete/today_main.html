@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container" id="today">
+  <div class="lnb-area">
+    <div class="lnb">
+      <input type="radio" name="tabmenu" id="tab1" class="tabs">
+      <label for="tab1" class="tab">
+        <a href="{% url 'todos:week' %}">WEEK</a>
+      </label>
+      <input type="radio" name="tabmenu" id="tab2" class="tabs" checked="checked">
+      <label for="tab2" class="tab">
+        <a href="{% url 'todos:today' %}">TODAY</a>
+      </label>
+      <input type="radio" name="tabmenu" id="tab3" class="tabs">
+      <label for="tab3" class="tab">
+        <a href="{% url 'todos:read_all' %}">ALL</a>
+      </label>
+      <span class="glider"></span>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="today-info">
+      <div class="today-date">
+        <p class="today-date-month">
+          M
+        </p>
+        <p class="today-date-day">D</p>
+      </div>
+      <div class="today-progress">
+        <div class="mkCharts" data-percent="{{achievement_rate}}" data-color="#3cddaa" data-size="100" data-stroke="3">
+        </div>
+        <!-- <canvas id="today-progress-crc" width="100" height="100"></canvas>
+        <div id="progress-per" data-ach-rate="{{achievement_rate}}">0%</div>
+       -->
+      </div>
+    </div>
+    <div class="today-task-add">
+      <button class="icon-btn add-btn">
+        <div class="add-icon"></div>
+        <div class="btn-txt">할 일 추가하기</div>
+      </button>
+    </div>
+
+    <section class="today-section">
+      <div class="today-task-add-spec">
+        <!-- today todo Form -->
+        <form action="{% url 'todos:create' %}" method="post" id="today-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="date" name="when" id="id_when">
+          <input type="text" name="title" placeholder="할일 추가하기" class="today_task-title">
+          <div class="timepicker-area">
+            <div class="starttime-select">
+              <label for="starttime-pick">시작 시간</label>
+              <input type="text" id="starttime-pick" value="" name="started_at" class="time-pickable"
+                readonly="readonly">
+            </div>
+            <span class="time-tilder">~</span>
+            <div class="endtime-select">
+              <label for="endtime-pick">종료 시간</label>
+              <input type="text" id="endtime-pick" value="" name="expired_at" class="time-pickable" readonly="readonly">
+            </div>
+          </div>
+          <textarea name="content" class="today_task-textarea" id="id_content" cols="30" rows="10"
+            placeholder="할 일 상세"></textarea>
+          <div class="keyword-box">
+            <input type="text" name="tags" id="" placeholder="#keyword">
+          </div>
+          <div class="btn-area">
+            <button type="submit" class="btn">할일 추가</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div class="box-area">
+    <div class="box today-task-area">
+      <ul class="today-task-list">
+        {% for todo in today_todos %}
+        <li class="task" data-todo-pk="{{todo.pk}}">
+          <p class="task-cont">{{ todo.title }}</p>
+          {% if todo.is_completed %}
+          <input type="checkbox" name="task-chb{{todo.pk}}" id="task-chb{{todo.pk}}" checked="checked">
+          {% else %}
+          <input type="checkbox" name="task-chb{{todo.pk}}" id="task-chb{{todo.pk}}">
+          {% endif %}
+          <label for="task-chb{{todo.pk}}" class="task-chb"></label>
+        </li>
+        {%empty%}
+        <li class="task task-empty">
+          <p class="task-cont ">
+            아직 작성된 할일이 없어요 :(</p>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <div class="today-timetable">
+        <div class="timetable-hour hour-left"></div>
+        <div class="timetable-box timetable-left"></div>
+        <div class="timetable-hour hour-right"></div>
+        <div class="timetable-box timetable-right"></div>
+      </div>
+    </div>
+
+    <div class="box today-section" id="task-detail">
+      <div class="today-task-view-spec">
+        <form action="" method="post" id="today-detail-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="date" name="when">
+          <input type="text" name="title" class="today_task-title" id="detail-title">
+          <div class="timepicker-area">
+            <div class="starttime-select-edit">
+              <label for="starttime-pick-edit">시작 시간</label>
+              <input type="text" id="starttime-pick-edit" value="" name="started_at" class="time-pickable"
+                readonly="readonly">
+            </div>
+            <span class="time-tilder">~</span>
+            <div class="endtime-select-edit">
+              <label for="endtime-pick-edit">종료 시간</label>
+              <input type="text" id="endtime-pick-edit" value="" name="expired_at" class="time-pickable"
+                readonly="readonly">
+            </div>
+          </div>
+          <textarea name="content" class="today_task-textarea" id="detail-cont" cols="30" rows="10"></textarea>
+          <!-- <fieldset class="today-task-fileadd"> <legend>Image/File</legend> <label for="today-task-imgfile"> <div class="loaded-file"></div> <div class="upload-none"> <span class="attach_img-icon material-symbols-outlined">imagesmode</span> 사진/파일을 첨부하세요 </div> </label> <input type="file" name="todoimg" class="today_task-img" id="today-task-imgfile"> </fieldset> -->
+          <div class="keyword-box">
+            <input type="text" name="tags" id="detail-tag" placeholder="#keyword">
+          </div>
+          <div class="btn-area">
+            <button class="btn" id="todo-update">할일 수정</button>
+        </form>
+        <form action="" method="post" id="detail-del-form">
+          {% csrf_token %}
+          <button type="submit" class="btn-del material-symbols-outlined" id="detail-btn-del">
+            delete_forever
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- today-study-area -->
+  <div class="box today-study-area">
+    <span class="open-icon material-symbols-outlined">
+      arrow_back_ios_new
+    </span>
+    <div class="study-tasklist-area">
+      <h3 class="tit">Study</h3>
+      <ul class="study-task-list">
+        {% for study_todo in today_study_todos %}
+        <li class="task">
+          <a href="{% url 'studies:detail' study_todo.study_pk.pk %}">
+            <div>
+              <p style="padding: 5px 0px;">{{study_todo.title}}</p>
+              <div style="text-align: right;">
+                <p style="display:inline-block; padding: 7px 12px; border-radius: 10px;">
+                  {{ study_todo.study_pk.title}}
+                </p>
+              </div>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="time-test">
+    {% for time in time_list %}
+    <p class="testbox" data-time-array="{{time}}">{{time}}</p>
+    {% endfor %}
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+  const timePickerArea = document.querySelector('.timepicker-area');
+
+  function activate() {
+
+    document
+      .querySelectorAll(".time-pickable")
+      .forEach(timePickable => {
+        let activePicker = null;
+        timePickable.addEventListener("focus", () => {
+          if (activePicker)
+            return;
+
+          activePicker = show(timePickable);
+
+          const onClickAway = ({ target }) => {
+            if (target === activePicker || target === timePickable || activePicker.contains(target)) {
+              return;
+            }
+
+            document.removeEventListener("mousedown", onClickAway);
+            timePickerArea.removeChild(activePicker);
+            activePicker = null;
+          };
+
+          document.addEventListener("mousedown", onClickAway);
+        });
+      });
+  }
+
+  function show(timePickable) {
+    const picker = buildPicker(timePickable);
+    // const { bottom: top, left } = timePickable.getBoundingClientRect();
+    console.log(this);
+    timePickerArea.appendChild(picker);
+
+    // picker.style.top = `${top}px`;
+    // picker.style.left = `${left}px`;
+
+    // timePickerArea.appendChild(picker);
+
+    return picker;
+  }
+
+  function buildPicker(timePickable) {
+
+    // const todayFormArea = document.querySelector('.today-task-add-spec');
+
+    const picker = document.createElement("div");
+    // timePickerArea.appendChild(picker);
+
+    const hourOptions = [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ].map(numberToOption);
+    const minuteOptions = [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50
+    ].map(numberToOption);
+
+    picker
+      .classList
+      .add("time-picker");
+    picker.innerHTML = `  
+          <select class="time-picker__select">
+              ${hourOptions.join("")}
+          </select>
+          :
+          <select class="time-picker__select">
+              ${minuteOptions.join("")}
+          </select>
+      `;
+
+    // console.log(timePickerArea);
+    // timePickerArea.insertAdjacentHTML("beforeend", `
+    //       <div class="time-picker">
+    //         <select class="time-picker__select">
+    //           ${hourOptions.join("")}
+    //       </select>
+    //       :
+    //       <select class="time-picker__select">
+    //           ${minuteOptions.join("")}
+    //       </select>
+    //       </div>
+    // `)
+
+    const selects = getSelectsFromPicker(picker);
+
+    selects
+      .hour
+      .addEventListener("change", () => timePickable.value = getTimeStringFromPicker(picker));
+    selects
+      .minute
+      .addEventListener("change", () => timePickable.value = getTimeStringFromPicker(picker));
+
+    if (timePickable.value) {
+      const { hour, minute, meridiem } = getTimePartsFromPickable(timePickable);
+
+      selects.hour.value = hour;
+      selects.minute.value = minute;
+    }
+
+    return picker;
+  }
+
+  function getTimePartsFromPickable(timePickable) {
+    const pattern = /^(\d+):(\d+) (am|pm)$/;
+    const [hour, minute] = Array
+      .from(timePickable.value.match(pattern))
+      .splice(1);
+
+    return { hour, minute };
+  }
+
+  function getSelectsFromPicker(timePicker) {
+    const [hour, minute] = timePicker.querySelectorAll(".time-picker__select");
+
+    return { hour, minute };
+  }
+
+  function getTimeStringFromPicker(timePicker) {
+    const selects = getSelectsFromPicker(timePicker);
+
+    return `${selects.hour.value}:${selects.minute.value}`;
+  }
+
+  function numberToOption(number) {
+    const padded = number
+      .toString()
+      .padStart(2, "0");
+
+    return `<option value="${padded}">${padded}</option>`;
+  }
+
+  activate();
+
+  // <!-- study todo div -->
+
+  const studyArea = document.querySelector('.today-study-area');
+  const openStudyArea = document.querySelector('.study-tasklist-area');
+  const openIcon = document.querySelector('.open-icon');
+  const taskArea = document.querySelector('.today-task-area');
+  const studyText = document.querySelector('.today-study-area .tit');
+
+
+  studyArea.addEventListener('click', () => {
+    studyArea.classList.toggle('activate');
+    openStudyArea.classList.toggle('activate');
+    taskArea.classList.toggle('activate');
+    openIcon.classList.toggle('activate');
+    studyText.classList.toggle('activate');
+
+    /* if (openStudyArea.style.display === "none") {
+      studyArea.style.width = "30%";
+      studyArea.style.justifyContent = "space-between";
+      openStudyArea.style.display = "block";
+      openStudyArea.style.width = "380px";
+      openStudyArea.style.alignSelf = "start";
+      openIcon.style.transform = "rotate(180deg)";
+      // taskArea.style.width = "80%";
+      taskArea.style.transition = "0.8s ease";
+    } else {
+      openStudyArea.style.display = "none";
+      openIcon.style.transform = "rotate(-360deg)";
+      // taskArea.style.width = "80%";
+      studyArea.style.transition = "0.8s ease";
+      studyArea.style.justifyContent = "center";
+      studyArea.style.width = "5%";
+      studyArea.style.display = "flex";
+    } */
+  });
+</script>
+<script>
+  message = document.querySelectorAll('.message-button')
+  console.log(message)
+  message.forEach(function (v, i, o) {
+    v.addEventListener('click', event => {
+      v.parentElement.remove()
+    })
+  })
+</script>
+{% endblock body %}

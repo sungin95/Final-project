@@ -1,0 +1,274 @@
+@import url(./init.css);
+@import url(./fontall.css);
+@import url(./main.css);
+@import url(./accounts.css);
+@import url(./today.css);
+@import url(./alltask.css);
+@import url(./create_today.css);
+@import url(./study_detail.css);
+@import url(./study_form.css);
+@import url(./study_index.css);
+
+
+/* main_index.html */
+@media all and (max-width: 575px) {
+  #main-login .container {
+    display: block;
+  }
+  .slide-area {
+    display: none;
+  }
+  #main-login .login {
+    width: 100%;
+    margin: 7rem auto;
+  }
+  #main-login .login .link-area .btn {
+    width: 35vw;
+  }
+}
+/* base.html */
+@media all and (max-width: 575px) {
+  /* navbar */
+  #header {
+    padding: 1rem 0.5rem;
+  }
+  #header .logo img {
+    width: 5rem;
+  }
+  #header .logo a {
+    width: 60px;
+    margin-right: 2rem;
+  }
+  #header .navi .gnb-area .gnb li {
+    font-size: 15px;
+  }
+  #header .navi .user-area .user-prof {
+    margin-right: 0.4rem;
+  }
+  #header .navi .user-area .user-prof img {
+    display: none;
+  }
+  #header .navi .user-area a {
+    margin-right: 0;
+  }
+  /* message */
+  #message-card {
+    width: 60vw;
+  }
+}
+
+/* accounts App Responsive */
+@media all and (max-width: 575px) {
+  #user-update .box {
+    width: 90vw;
+  }
+  #user-update #user-update-form input[id="image"]:focus + label {
+    border: 1px solid var(--main);
+    color: var(--main);
+    transform: scale(0.8) translate(20px, -10px);
+    opacity: 1;
+  }
+  #mypage .user-info .profile-img {
+    left: 30px;
+  }
+  #mypage .box {
+    margin: 0.8rem 0.15rem;
+  }
+}
+
+/* todo App Responsive */
+@media all and (max-width: 575px) {
+  /* today_main.html */
+  #today .box-area {
+    display: block;
+    width: 95vw;
+  }
+  #today .today-task-list {
+    margin-right: 0;
+  }
+  #today .today-task-list .task {
+    width: 60vw;
+  }
+  #today .today-timetable {
+    display: none;
+  }
+  #today #task-detail.activate {
+    margin-top: 3rem;
+    width: 90vw;
+  }
+  #today .box .today-section .today-task-add-spec {
+    max-width: 80vw;
+  }
+  #today #task-detail {
+    opacity: none;
+    height: 0;
+  }
+  #today #task-detail.activate {
+    height: 100%;
+  }
+  #today .today-study-area {
+    margin-left: 0;
+    margin-top: 2rem;
+  }
+  #today .today-study-area.activate {
+    width: 90vw;
+  }
+
+  /* week_todos.html */
+  #week .week-area {
+    padding: 0;
+  }
+  #week .week-area .box {
+    margin: 1rem;
+  }
+  #week .week-area .task {
+    width: 60vw;
+  }
+  #week .week-btn-area .week-btn-prev,
+  #week .week-btn-area .week-btn-next {
+    font-size: 2rem;
+    margin: 0 3rem;
+    padding-top: 0.3rem;
+  }
+  #week .week-btn-area .week-btn-next {
+    margin: 0 2.4rem;
+  } 
+  #week .week-btn-area .week-btn .prev-week {
+    position: absolute;
+    top: 3.5rem;
+    left: 0.6rem;
+  }
+  #week .week-btn-area .week-btn .next-week {
+    position: block;
+    top: 3.4rem;
+    right: 0.4rem;
+  }
+
+  /* alltask.html */
+  #timeline-box-area {
+    display: block;
+  }
+  .task-timeline .timedetail-form {
+    margin-top: 1rem;
+    position: static;
+    overflow: visible;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.3s ease-in;
+  }
+  .task-timeline .time-box-area.activate {
+    width: 100%;
+  }
+  .task-timeline .timedetail-form.activate {
+    width: 100%;
+    display: static;
+    opacity: 1;
+    transition: all 0.3s ease-out;
+  }
+}
+
+
+
+/* studies App Responsive */
+ /* study index */
+@media all and (max-width: 575px) {
+  #study-index-area .study-search{
+    display: block;
+  }
+  #study-index-area .search-box input[type="text"]:focus,
+  #study-index-area .search-box input[type="text"]:not(:invalid) {
+    width: 340px;
+  }
+  #study-index-area .create-box {
+    line-height: 100px;
+    margin: 0 6.25rem;
+  }
+  #study-index-area .st {
+    margin: 0;
+    width: 80vw;
+  }
+  #study-index-area .st .tab {
+    font-size: 0.64rem;
+  }
+  #study-index-area .st .glider {
+    display: none;
+  }
+  #study-index-area .study-room {
+    margin: 2rem;
+  }
+  #study-index-area .create-box .study-add-icon {
+    vertical-align: text-bottom;
+  }
+  #study-index-area .create-box .study-add-text {
+    vertical-align: top;
+  }
+
+  /* study info */
+  #study-info-area .info-btn-li .detail-direct-btn,
+  #study-info-area .info-btn-li .enter-btn,
+  #study-info-area .info-btn-li .study-cancel-btn {
+    padding: 0.6rem 0.7rem;
+    margin: 0 0.4rem;
+  }
+
+  /* study detail */
+  #study-task-form {
+    width: 100%;
+  }
+  #study-task-form .datepicker-area {
+    display: block;
+    margin: 2rem auto;
+  }
+  #study-task-form .studytask-startpick {
+    margin-bottom: 1rem;
+  }
+  #study-todo-area .study-todo-section .btn-area .btn {
+    width: 7rem;
+  }
+
+  /* date-picker */
+  .study-datepicker .study-start-picker,
+  .study-datepicker .study-end-picker,
+  .study-info-datepicker .study-start-picker,
+  .study-info-datepicker .study-end-picker,
+  .study-update-datepicker .study-start-picker,
+  .study-update-datepicker .study-end-picker {
+    margin-left: 1.8rem;
+  }
+
+  .study-datepicker .study-end-picker,
+  .study-info-datepicker .study-end-picker,
+  .study-update-datepicker .study-end-picker {
+    margin-top: 1.5rem;
+  }
+
+  #create-study-area .study-datepicker,
+  #study-info-area .study-info-datepicker,
+  #update-study-form .study-update-datepicker {
+    display: block;
+    justify-self: center;
+  }
+
+  #update-study-form input[id="study-start-date"],
+  #update-study-form input[id="study-end-date"],
+  #create-study-form input[id="study-start-date"],
+  #create-study-form input[id="study-end-date"],
+  #study-info-area input[id="study-start-date"],
+  #study-info-area input[id="study-end-date"] {
+    text-align: center;
+    width: 167.78px;
+    margin: 0 1.5rem;
+  }
+  .pagination {
+    width: 55vw;
+  }
+  
+}
+
+@media all and (min-width: 575px) {
+  .topbtn {
+    opacity: 0;
+  }
+}
+

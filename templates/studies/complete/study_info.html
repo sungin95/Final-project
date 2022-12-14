@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+  <div class="container">
+    <div class="box info-box">
+      <article id="study-info-area">
+        <!-- 스터디 title -->
+        <label for="study-info-name"># 스터디 이름</label>
+        <input type="text" name="title" value="{{study.title}}" class="study-info-title" id="study-info-name" disabled="disabled">
+
+        <!-- 스터디 category -->
+        <fieldset class="study-info-categories">
+          <legend># 카테고리</legend>
+          <div class="categories-area">
+            <input type="radio" name="ct" id="ct0" value="생활">
+            <label for="ct0">생활</label>
+            <input type="radio" name="ct" id="ct1" value="IT/개발">
+            <label for="ct1">IT/개발</label>
+            <input type="radio" name="ct" id="ct2" value="외국어">
+            <label for="ct2">외국어</label>
+            <input type="radio" name="ct" id="ct3" value="인문">
+            <label for="ct3">인문</label>
+            <input type="radio" name="ct" id="ct4" value="수능">
+            <label for="ct4">수능</label>
+            <input type="radio" name="ct" id="ct5" value="취업">
+            <label for="ct5">취업</label>
+            <input type="radio" name="ct" id="ct6" value="면접">
+            <label for="ct6">면접</label>
+            <input type="radio" name="ct" id="ct7" value="기타">
+            <label for="ct7">기타</label>
+          </div>
+        </fieldset>
+
+        <label for="study-members-num"># 스터디 인원</label>
+        <div class="members-area" id="study-members-num">
+          <div class="study-membernum">{{study.member_number}}명</div>
+          <span>/</span>
+          <div class="study-totalnum">{{study.max_people}}명</div>
+        </div>
+
+        <!-- 스터디 장의 경우, 스터디 승인 받아주는 창 보여짐 -->
+        <!--추후 디테일 페이지로 옮겨야됨 담당자: 성인-->
+        {% if request.user == study.owner%}
+          <ul class="approve-members">
+            <h6></h6>
+            {% for user in application_member%}
+              <li>
+                <div class="approve-user-info">
+                  <!-- user profile img -->
+                  {% if user.image %}
+                    <img src="user.image.url" alt="" class="study-detail-userimg">
+                  {% else %}
+                    <img src="https://dummyimage.com/40x40/bab3ba/000000.jpg" alt="" class="study-detail-userimg">
+                  {% endif %}
+                  <!-- username -->
+                  <h6>{{user.username}}</h6>
+                </div>
+                <div class="detail-btn-group">
+                  <!-- approval btn -->
+                  <form action="{% url 'studies:accept' study.pk user.pk%}">
+                    <input type="submit" value="승인" class="approval-btn">
+                  </form>
+                  <!-- reject btn -->
+                  <form action="{% url 'studies:refusal' study.pk user.pk%}">
+                    <input type="submit" value="거절" class="reject-btn">
+                  </form>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        <!-- 스터디 소개 -->
+        <label for="study-info-text"># 스터디 소개</label>
+        <textarea name="" id="study-info-text" cols="30" rows="10" disabled="disabled">{{study.desc}}</textarea>
+        <!-- 시작일, 종료일-->
+        <div class="study-info-datepicker">
+          <fieldset class="study-start-picker">
+            <legend># 시작일</legend>
+            <input type="date" name="" value="{{start}}" id="study-start-date" disabled="disabled">
+          </fieldset>
+          <fieldset class="study-end-picker">
+            <legend># 종료일</legend>
+            <input type="date" name="" value="{{end}}" id="study-end-date" disabled="disabled">
+          </fieldset>
+        </div>
+
+        <div class="info-btn-li">
+          <!-- 스터디 디테일 페이지 이동 (승인받은 회원만) -->
+          {% if request.user in study.participated.all %}
+            {% if study in request.user.join_study.all %}
+              <a href="{% url 'studies:detail' study.pk %}" class="detail-direct-btn">진입</a>
+            {% else %}
+              {% if study.max_people == study.member_number %}
+                <div class="enter-btn">가입신청불가</div>
+                <div id="join-study" style="display: none;">찾는 id가 없으면 오류걸리니까</div>
+              {% else %}
+                <form class="enter-btn" id="join-study" data-study-id="{{ study.pk }}">
+                  {% csrf_token %}
+                  <input id="join-study-input" type="submit" value="">
+                  <label id="join-study-input-label" for="join-study-input">가입신청중</label>
+                </form>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            {% if study.max_people == study.member_number %}
+              <div class="enter-btn">가입신청불가</div>
+              <div id="join-study" style="display: none;">찾는 id가 없으면 오류걸리니까</div>
+            {% else %}
+              <form class="enter-btn" id="join-study" data-study-id="{{ study.pk }}">
+                {% csrf_token %}
+                <input id="join-study-input" type="submit" value="">
+                <label id="join-study-input-label" for="join-study-input">가입</label>
+              </form>
+            {% endif %}
+          {% endif %}
+          <!-- 스터디 index로 다시 돌아가기 -->
+          <a href="{% url 'studies:index' %}" class="study-cancel-btn">돌아가기</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    const categoryField = document.querySelector(".categories-area");
+    const tabs = categoryField.childNodes;
+    const check = "{{ study.category }}";
+
+    for (let l = 0; l < tabs.length; l++) {
+      if (tabs[l].value === check) {
+        console.log(tabs[l].value)
+        tabs[l].checked = true;
+      } else {
+        tabs[l].disabled = true;
+      }
+    };
+  </script>
+  <script>
+    // 가입 신청 비동기
+    const joinStudy = document.querySelector("#join-study");
+    joinStudy.addEventListener('submit', function (event) {
+      event.preventDefault()
+      const csrftoken = document
+        .querySelector('[name=csrfmiddlewaretoken]')
+        .value;
+      axios({
+        method: 'post',
+        url: `/studies/detail/${event.target.dataset.studyId}/join`,
+        headers: {
+          'X-CSRFToken': csrftoken
+        }
+      }).then(response => {
+        const joinStudyInputLabel = document.querySelector("#join-study-input-label")
+        if (response.data.is_participated === true) {
+          joinStudyInputLabel.innerText = "가입신청중"
+
+        } else {
+          joinStudyInputLabel.innerText = "가입"
+        }
+      })
+    })
+  </script>
+{% endblock body %}

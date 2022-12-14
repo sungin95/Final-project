@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="container" id="user-update">
+    <div class="box">
+        <div class="logo">
+            <img src="{% static 'img/planT_logo.svg' %}" alt="plan-t logo">
+        </div>
+        <h3 class="tit">회원정보 수정</h3>
+        <form action="" method="POST" id="user-update-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-area">
+                <input type="text" name="nickname" maxlength="14" id="id_nickname" autofocus="autofocus">
+                <label for="id_nickname">닉네임</label>
+            </div>
+            <div class="input-area">
+                <input type="email" name="email" maxlength="254" id="id_email" autofocus="autofocus">
+                <label for="id_email">이메일</label>
+            </div>
+            <div class="input-area">
+                <input type="password" name="old_password" autocomplete="current-password" id="id_old_password" autofocus="autofocus">
+                <label for="id_old_password">기존 비밀번호</label>
+            </div>
+            <div class="input-area">
+                <input type="password" name="new_password1" autocomplete="new-password" id="id_new_password1" autofocus="autofocus">
+                <label for="id_new_password1">새 비밀번호</label>
+            </div>
+            <div class="input-area">
+                <input type="password" name="new_password2" autocomplete="new-password" id="id_new_password2" autofocus="autofocus">
+                <label for="id_new_password2">새 비밀번호 확인</label>
+            </div>
+            <div class="input-area">
+                <img src="" class="img-prev" width="100" height="100" height=alt="">
+                <!-- <div class="loaded-file"></div>
+                    <div class="upload-none">
+                        <span class="attach_img-icon material-symbols-outlined">imagesmode</span>
+                        사진/파일을 첨부하세요
+                    </div> -->
+                <input type="file" name="image" accept="image/*" id="image" autofocus="autofoucs">
+                <label for="image" >프로필 이미지</label>
+            </div>
+            <button class="btn" type="submit">회원정보 수정하기</button>
+        </form>
+    </div>
+    <script>
+        // img 미리보기 기능
+        const imageDOM = document.getElementById("image");
+        const preview = document.querySelector(".img-prev");
+        const imgLabel = document.querySelector("label[for='image']");
+
+        preview.classList.remove("img-prev");
+        preview.style.visibility = "hidden";
+
+        imageDOM.addEventListener('change', () => {
+            const reader = new FileReader();
+            reader.onload = function(data) {
+                preview.src = data.target.result;
+            };
+            preview.classList.add("img-prev");
+            preview.style.visibility = "visible"
+            reader.readAsDataURL(imageDOM.files[0]);
+            imgLabel.innerText = "이미지 수정";
+        });
+
+        // input 태그에 데이터 추가
+        let nickname = document.querySelector("#id_nickname");
+        let email = document.querySelector("#id_email");
+        let image = document.querySelector("#image");
+
+        function SetInputTag(target, data) {
+            if(data !== "None" && data !== ""){
+                target.parentNode.classList.add("activate");
+                return data;
+            }
+            else {
+                target.parent.classList.remove("activate");
+                return "";
+            }
+        }
+        nickname.value = SetInputTag(nickname, "{{ request.user.nickname }}");
+        email.value = SetInputTag(email, "{{ request.user.email }}");
+    </script>
+</div>
+<!-- {{form}} -->
+
+{% endblock body %}

@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap");
+@import url(./fontall.css);
+@import url(./main.css);
+@import url(./create_today.css);
+
+#timeline-box-area {
+	display: flex;
+	align-items: start;
+	border-radius: 20px;
+}
+
+.task-timeline .time-box-area {
+	margin-right: 2rem;
+	width: 100%;
+	transition: 0.3s ease;
+}
+
+.task-timeline .time-box-area.activate {
+	width: 70%;
+}
+
+.task-timeline .timedetail-form {
+	overflow: hidden;
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: -1;
+	box-shadow: none;
+	opacity: 0;
+}
+
+.task-timeline .timedetail-form.activate {
+	display: block;
+	width: 30%;
+	height: 100%;
+	position: relative;
+	z-index: 0;
+	transition: 0.3s ease;
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	align-self: center;
+	opacity: 1;
+}
+
+/* timeline area */
+
+/* .task-timeline .past-timeline,
+.task-timeline .today-timeline,
+.task-timeline .tomorrow-timline{
+  overflow-y: scroll;
+  margin-top: 1rem;
+  z-index: 2;
+  overflow: hidden;
+} */
+            
+
+.task-timeline .past-timeline:first-child {
+	margin-top: 0;
+}
+
+.task-timeline .timeline-box {
+	display: flex;
+}
+
+
+.task-timeline .timeline-box .time-point,
+.task-timeline .timeline-box .times{
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg);
+  border-radius: 20px;
+  padding: 0 4.8rem;
+  height: 39px;
+  line-height: 43px;
+  cursor: pointer;
+	margin-bottom: 0.5rem;
+}
+
+.timeline-box:hover > .arrow-icon {
+	transform: rotate(90deg);
+}
+.timeline-box:active > .arrow-icon {
+	transform: rotate(90deg);
+}
+
+.past-timeline .timeline-box .arrow-icon {
+	transition: 0.3s;
+}
+
+
+.past-timeline .past-date_all{
+  margin-top: 1rem;
+  display: none;
+  transition: 0.3s ease;
+}
+
+.past-timeline .past-date_all.activate{
+  display: block;
+}
+
+.past-date:hover > .arrow-icon {
+	transform: rotate(90deg);
+}
+
+.past-date:active > .arrow-icon {
+	transform: rotate(90deg);
+}
+
+.past-date_all .past-date .arrow-icon {
+	transition: 0.3s;
+}
+
+.past-date_all .past-date {
+	display: flex;
+	align-items: center;
+	margin-left: 3rem;
+}
+
+.past-date_all .past-date:first-child {
+	margin-top: 0;
+}
+
+.past-date_all .past-date .datetime {
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	background-color: var(--bg);
+	border: 2px solid var(--gr-dark);
+	border-radius: 15px;
+	width: 430px;
+	text-align: start;
+	padding: 0.8rem 1rem;
+	margin-right: 1rem;
+	/* margin-bottom: 1rem; */
+	cursor: pointer;
+}
+
+
+
+.past-date_all .task_listup{
+  margin-left: 4rem;
+}
+
+.past-date_all .task_listup:last-child {
+	margin-bottom: 1rem;
+}
+
+.task_listup .task-li-content{
+  background-color: var(--sub);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  height: 50px;
+	max-width: 400px;
+  margin-bottom: 1rem;
+  display: none;
+  padding: 1rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+	letter-spacing: -1px;
+}
+
+
+.task_listup .task-li-content.activate{
+	display: flex;
+}
+.task_listup .task-li-content.activate:first-child {
+	margin-top: 1rem;
+}
+
+.today-timeline .task_listup .task-li-content.activate,
+.tomorrow-timeline .task_listup .task-li-content.activate{
+	display: flex;
+  margin-left: 4rem;
+	margin-bottom: 1rem;
+}
+
+
+input[id="past-check"]{
+  display: none;
+}
+
+input[id="past-check"] + label {
+	display: inline-block;
+	background-color: var(--bg);
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(--main);
+	position: relative;
+}
+
+/* timedetail-from-area */
+#today-detail-form .keyword-box {
+	width: 90px;
+}
+
+#today-detail-form .today_task-img {
+	padding: 2.6rem 0;
+}
+
+#timedetail-form-area {
+	height: 100%;
+}
+
+#timedetail-form-area textarea[name="today_task-textarea"] {
+	margin-top: 1rem;
+}

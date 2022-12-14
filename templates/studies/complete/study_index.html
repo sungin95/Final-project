@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+  <div class="container" id="study-index-area">
+    <div class="box">
+      <!-- search bar Area -->
+      <article class="study-search">
+        <form action="" method="get" class="search-box">
+          <input placeholder="" required="" class="input" name="search" type="text">
+          <!--숨겨야됨-->
+          <input type="text" name="tabmenu" value="{{category}}" style="display: none;">
+          <button class="button" type="submit">
+            <div class="icon">
+              <svg viewbox="0 0 512 512" class="ionicon" xmlns="http://www.w3.org/2000/svg">
+                <title>Search</title>
+                <path stroke-width="52" stroke-miterlimit="10" stroke="currentColor" fill="none" d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"></path>
+                <path d="M338.29 338.29L448 448" stroke-width="52" stroke-miterlimit="10" stroke-linecap="round" stroke="currentColor" fill="#3cddaa"></path>
+              </svg>
+            </div>
+          </button>
+        </form>
+        <a href="{% url 'studies:create' %}" class="create-box">
+          <span class="study-add-icon material-symbols-outlined">add_circle</span>
+          <span class="study-add-text">스터디 만들기</span>
+        </a>
+      </article>
+
+      <!-- category area -->
+      <article class="study-category">
+        <form action="" method="get" class="st" id="select-category">
+          <input type="radio" name="tabmenu" id="tab0" class="tabs" checked="checked">
+          <label for="tab0" class="tab">ALL</label>
+          <input type="radio" name="tabmenu" id="tab1" class="tabs" value="생활">
+          <label for="tab1" class="tab">생활</label>
+          <input type="radio" name="tabmenu" id="tab2" class="tabs" value="IT/개발">
+          <label for="tab2" class="tab">IT/개발</label>
+          <input type="radio" name="tabmenu" id="tab3" class="tabs" value="외국어">
+          <label for="tab3" class="tab">외국어</label>
+          <input type="radio" name="tabmenu" id="tab4" class="tabs" value="수능">
+          <label for="tab4" class="tab">수능</label>
+          <input type="radio" name="tabmenu" id="tab5" class="tabs" value="인문">
+          <label for="tab5" class="tab">인문</label>
+          <input type="radio" name="tabmenu" id="tab6" class="tabs" value="취업">
+          <label for="tab6" class="tab">취업</label>
+          <input type="radio" name="tabmenu" id="tab7" class="tabs" value="면접">
+          <label for="tab7" class="tab">면접</label>
+          <input type="radio" name="tabmenu" id="tab8" class="tabs" value="기타">
+          <label for="tab8" class="tab">기타</label>
+          <span class="glider"></span>
+        </form>
+      </article>
+      <!-- study index body -->
+      <section class="study-list">
+        {% for study in page_list %}
+          <div class="study-room">
+            <div class="study-header">
+              <div class="study-category">
+                {{study.category}}
+              </div>
+            </div>
+            <div class="study-body">
+              <div class="study-name-area">
+                <div class="study-name">
+                  {{study.title}}
+                </div>
+                <div class="people-num">
+                  <span class="participant-num">{{study.member_number}}명</span>
+                  /
+                  <span class="all-num">{{study.max_people}}명</span>
+                </div>
+              </div>
+              <fieldset class="study-info">
+                <legend>스터디 소개</legend>
+                <div class="study-desc">
+                  {{study.desc}}
+                </div>
+              </fieldset>
+              <fieldset class="study-date">
+                <legend>스터디 기간</legend>
+                <div>
+                  {{study.start_at | date:"y-m-d"}}
+                  ~
+                  {{study.end_at | date:"y-m-d"}}
+                </div>
+              </fieldset>
+            </div>
+            <!-- 진입하기 or 가입하기 -->
+            <div class="study-footer">
+                {% if request.user in study.participated.all %}
+                    {% if study in request.user.join_study.all %}
+                        <a href="{% url 'studies:detail' study.pk %}" class="join-btn">진입하기</a>
+                    {% else %}
+                        {% if study.max_people == study.member_number %}
+                            <a href="{% url 'studies:info' study.pk %}" class="join-btn">자리가 없어요</a>
+                        {% else %}
+                            <a href="{% url 'studies:info' study.pk %}" class="join-btn">가입신청중</a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% if study.max_people == study.member_number %}
+                        <a href="{% url 'studies:info' study.pk %}" class="join-btn">자리가 없어요</a>
+                    {% else %}
+                        <a href="{% url 'studies:info' study.pk %}" class="join-btn">가입하기</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    <!-- comment가 있어야 아래쪽 자동 정렬을 멈출 수 있어서 임시로 만듬. 삭제해도 됨 -->
+      {% comment %} <div></div> {% endcomment %}
+
+      <!-- 페이지네이션 -->
+      <ul class="pagination">
+        {% if page_list.has_previous %}
+          <li class="page__btn">
+            <a class="page-link" href="?page={{ page_list.previous_page_number }}&search={{search}}&tabmenu={{category}}"><span class="material-symbols-outlined">chevron_left</span></a>
+          </li>
+        {% else %}
+          <li class="page__btn disabled">
+            <a class="page-link" href="#"><span class="material-symbols-outlined">chevron_left</span></a>
+          </li>
+        {% endif %}
+        {% for page_number in page_list.paginator.page_range %}
+          {% if page_number >= page_list.number|add:-5 and page_number <= page_list.number|add:5 %}
+            {% if page_number == page_list.number %}
+              <li class="page__numbers active">
+                <a class="page-link" href="?page={{ page_number }}&search={{search}}&tabmenu={{category}}">{{ page_number }}</a>
+              </li>
+            {% else %}
+              <li class="page__numbers">
+                <a class="page-link" href="?page={{ page_number }}&search={{search}}&tabmenu={{category}}">{{ page_number }}</a>
+              </li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if page_list.has_next %}
+          <li class="page__btn">
+            <a class="page-link" href="?page={{ page_list.next_page_number }}&search={{search}}&tabmenu={{category}}"><span class="material-symbols-outlined">chevron_right</span></a>
+          </li>
+        {% else %}
+          <li class="page__btn disabled">
+            <a class="page-link" href="#"><span class="material-symbols-outlined">chevron_right</span></a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <div class="topbtn">
+    <span class="topbtn-icon material-symbols-outlined">arrow_upward</span>
+  </div>
+
+  <script>
+    const selectCategory = document.querySelector('#select-category');
+    selectCategory.addEventListener('click', function (event) {
+      selectCategory.action = document.location.href;
+      // selectCategory.action = 'http://plan-t.site/studies'
+      selectCategory.method = 'GET';
+      selectCategory.submit()
+    })
+
+    const url = new URL(window.location.href);
+    const urlParams = url.searchParams;
+    const menu = urlParams.get('tabmenu');
+
+    const categories = selectCategory.querySelectorAll('.tabs');
+    for (let idx = 0; idx < categories.length; idx++) {
+      if (categories[idx].value === menu) {
+        categories[idx].checked = true;
+      }
+    }
+
+    // study desc 부분 글자수 제한 30자
+    // link : https://stackoverflow.com/questions/21447269/how-to-limit-the-length-of-text-in-a-paragraph
+    function truncateText(node, maxLength) {
+        let truncated = node.innerText;
+    
+        if (truncated.length > maxLength) {
+            truncated = truncated.substr(0,maxLength) + '...';
+        }
+        
+        return truncated
+    }
+    document.querySelectorAll('.study-desc').forEach(function(v, i, o){
+        v.innerText = truncateText(v, 26);
+    })
+
+  </script>
+
+  <script>
+    const topBtn = document.querySelector('.topbtn');
+
+    window.addEventListener('scroll', () => {
+      topBtn.style.display = "block";
+      topBtn.addEventListener('click', (e) => {
+        window.scrollTo({top:0, left:0, behavior:"smooth"});
+      })
+    });
+
+  </script>
+
+{% endblock body %}

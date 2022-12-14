@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap");
+@import url(./fontall.css);
+@import url(./main.css);
+
+/* todayList Form */
+
+#today-form,
+#today-detail-form,
+#create-study-form,
+#study-detail-area,
+#update-study-form,
+#study-task-form,
+#study-info-area {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+#study-detail-area,
+#study-info-area,
+#create-study-form,
+.study-todo-section {
+	max-width: 70%;
+	margin: 4.8rem auto;
+}
+
+#update-study-form {
+	max-width: 70%;
+	margin: 2rem auto;
+}
+
+#today-form .today_task-title,
+#today-detail-form .today_task-title,
+#study-task-form .study_task-title {
+	height: 49px;
+	background: var(--bg);
+	border: 2px solid var(--main);
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 20px;
+	padding: 1rem;
+}
+
+#today-form .keyword-box,
+#today-detail-form .keyword-box,
+#study-task-form .keyword-box,
+#study-todo-area .keyword-box {
+	width: 20vw;
+	text-align: left;
+}
+
+#today-form .keyword-box,
+#today-detail-form .keyword-box,
+#study-task-form .keyword-box,
+#study-todo-area .keyword-box {
+	margin: 1rem 0;
+	height: 34px;
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 20px;
+	background-color: var(--bg);
+}
+
+#today-form .keyword-box input[type="text"],
+#today-detail-form .keyword-box input[type="text"],
+#study-task-form .keyword-box input[type="text"],
+#study-todo-area .keyword-box input[type="text"] {
+	line-height: 34px;
+	padding: 0 1rem;
+}
+
+#today-form .today_task-textarea,
+#today-detail-form .today_task-textarea,
+#study-task-form .study_task-textarea,
+#study-todo-area .study_task-textarea {
+	font-family: "Noto Sans KR", sans-serif;
+	font-size: 1rem;
+	border-radius: 20px;
+	height: 283px;
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	background-color: var(--bg);
+	border: 0;
+	padding: 2rem;
+	resize: none;
+	transition: 0.18s;
+}
+
+#study-todo-area .study_task-textarea {
+	margin-top: 1rem;
+}
+
+#today-form .today_task-textarea:active,
+#today-detail-form .today_task-textarea:active,
+#study-task-form .study_task-textarea:active,
+#study-todo-area .study_task-textarea:active {
+	border: none;
+}
+
+#today-form .today_task-textarea:focus,
+#today-detail-form .today_task-textarea:focus,
+#study-task-form .study_task-textarea:focus,
+#study-todo-area .study_task-textarea:focus {
+	outline: var(--main) solid 2px;
+}
+
+#today-form .today_task-img,
+#study-task-form .study_task-img,
+#study-todo-area .study_task-img {
+	padding: 5rem 0;
+}
+
+/* timepicker */
+
+#today-form .timepicker-area,
+#study-task-form .datepicker-area,
+#today-detail-form .timepicker-area {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	margin: 2rem 0;
+}
+#today-form .time-picker,
+#today-detail-form .time-picker {
+	/* position: absolute; */
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+#today-form .timepicker-area .starttime-select,
+#today-form .timepicker-area .endtime-select,
+#study-task-form .datapicker-area #studytask-start,
+#study-task-form .datapicker-area #studytask-end {
+	display: flex;
+	flex-direction: column;
+}
+
+#today-form label,
+#study-task-form label,
+#today-detail-form label {
+	text-indent: 20px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--main);
+}
+
+#today-form #starttime-pick,
+#today-form #endtime-pick,
+#study-task-form #studytask-start,
+#study-task-form #studytask-end,
+#today-detail-form #starttime-pick-edit,
+#today-detail-form #endtime-pick-edit {
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+	padding: 0.65rem;
+	border-radius: 20px;
+	text-align: center;
+	margin-top: 0.2rem;
+}
+#today-detail-form #starttime-pick-edit,
+#today-detail-form #endtime-pick-edit {
+	width: 120px;
+}
+
+#today-form .time-tilder,
+#today-detail-form .time-tilder {
+	font-size: 30px;
+	width: 50px;
+	color: var(--main);
+	text-align: center;
+	vertical-align: bottom;
+}
+
+/* 사진 업로드 */
+#today-form input[type="file"],
+#today-detail-form input[type="file"],
+#study-todo-area input[type="file"] {
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+}
+
+#today-form .today-task-fileadd,
+#today-detail-form .today-task-fileadd,
+#study-todo-area .study-task-fileadd {
+	position: relative;
+	margin: 1rem 0;
+	border: 2px dotted var(--main);
+	border-radius: 15px;
+	padding: 50px;
+	filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.1));
+}
+
+#today-form .today-task-fileadd legend,
+#today-detail-form .today-task-fileadd legend,
+#study-task-form .study-task-fileadd legend,
+#study-todo-area .study-task-fileadd legend {
+	color: var(--main);
+	padding: 0 5px;
+	letter-spacing: -1px;
+	font-weight: 700;
+}
+
+#today-form .today-task-fileadd label,
+#today-detail-form .today-task-fileadd label,
+#study-todo-area .study-task-fileadd label {
+	color: var(--main);
+	letter-spacing: -1px;
+	font-weight: 700;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 20px;
+	filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.1));
+}
+
+#today-form .today-task-fileadd .loaded-file,
+#today-detail-form .today-task-fileadd .loaded-file,
+#study-todo-area .study-task-fileadd .study-loaded-file {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	line-height: 110px;
+}
+
+#today-form .today-task-fileadd .upload-none,
+#today-detail-form .today-task-fileadd .upload-none,
+#study-todo-area .study-task-fileadd .study-upload-none {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#today-form .today-task-fileadd .attach_img-icon,
+#today-detail-form .today-task-fileadd .attach_img-icon,
+#study-todo-area .study-task-fileadd .attach_img-icon {
+	font-size: 20px;
+	font-weight: 700;
+	justify-self: end;
+}
