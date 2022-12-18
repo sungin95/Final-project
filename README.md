@@ -177,7 +177,9 @@
 
 ### 제 입장(백엔드)에서 바라본 개발을 진행하면서 어려웠던 점
 
-### 나열 기준
+### Todos
+
+#### 나열 기준
 
 |           | 기존 |     플래너     |
 | :-------: | :--: | :------------: |
@@ -187,7 +189,7 @@
 
 그 동안 프로젝트를 하면서 음식점, 댓글, 게시글, 제품 등 많은 CURD를 해 보았지만 항상 생성된 시간이 중요했고, 그래서 날짜는 항상 `auto_now_add=True`를 사용하여 나타내기만 했는데. 처음으로 사용자로 부터 날짜를 받아와서, 그 날짜를 중심으로 사용자에게 데이터를 보여줘야 했습니다. 어려운 문제는 아니었지만, 익숙하지 않은 새로운 구조라서 처음에는 많이 당황을 했습니다. 
 
-### week
+#### week
 
 플래너를 만들다 보니 이걸 주 단위로 보여주는 페이지가 필요했습니다. 그런데 여기서 발생한 문제가 만약 오늘이 2022년 12월 13일 화요일이라면 이틀 전인 11일 부터 17일까지를 보여줘야 했고, 15일이라면 4일 전부터 보여줘야 했습니다. 
 
@@ -196,6 +198,77 @@
 여기에 이번주 다음주의 값도 보여 줘야 했는데. 저는 이 문제를 주소창을 통해 0,1,2,-1,-2등을 받게 해서 0이면 이번주 1이면 다음주 -1이면 지난주를 보여줄수 있게 설계를 했습니다..
 
 문제를 해결하고 기분좋게 프론트 친구에게 이게 이런식으로 변수화 해서 데이터 보낼줄께 라고 했는데. 프론트를 하는 친구는 다음주 지난주로 이동 할 때 비동기를 통해 구현을 하고 싶다고 했습니다. 음... 그러면 return 값만 JsonResponse으로 보내 주면 되겠네라고 생각을 했는데. 그렇게 하니까 처음에 화면을 불러올때 문제가 발생을 하였고, 이걸 해결하기 위해 week(동기)와 week(비동기)로 나누었고, 맨처음에는 무조건 동기로 된 페이지를 불러오게 하였고, 이 페이지에서 지난주로 가기는 다음주로 가기로 클릭을 하면 비동기 페이지를 불러오는 방식을 택했습니다. 
+
+
+
+### Studies
+
+#### index(스터디방 목록 페이지)
+
+목록을 내타낼때 카테고리, 검색, 페이지 네이션 3가지 종류로 나타냈습니다. 
+
+이 셋은 모두 주소창에 띄는 입풋 값을 통하여 나타나게 됩니다. 그런데 무작정 이 셋을 넣고 보니 검색을 하면 카테고리가 사라지고 페이지 네이션을 누르면 검색과 카테고리가 사라지는 문제가 발생하였습니다. 
+
+이 문제를 해결하기 위해서 우선 순서를 정했습니다. 
+
+예를 들어 보통 카테고리를 클릭하는 순간은 새롭게 찾을 때이고, 검색을 한다면 현재 카테고리에서 정보를 찾을 거라고 생각했습니다. 그리고 페이지 네이션을 클릭할 때는 카테고리랑 검색내용이 유지 되어야 한다고 보았습니다. 
+
+순서: 카테고리 > 검색 > 페이지네이션
+
+순서를 정하고 나서는 HTML페이지에서 input값이 유지가 될 수 있도록 조치를 취할 필요가 있었습니다. 우선 검색할 때 현재 클릭한 카테고리가 유지가 되도록 만들기 위해 숨김 처리를 해서 사용자는 모르지만 해당 카테고리값을 다시 불러 올 수 있도록 설계를 했습니다. 
+
+```html
+<input type="text" name="tabmenu" value="{{category}}" style="display: none;">
+```
+
+페이지 네이션은 모두를 고려해 주기 위해 현재페이지에서 아래의 3개의 값을 다시 불러오도록 설계를 했습니다. 
+
+```html
+<a class="page-link" href="?page={{ page_number }}&search={{search}}&tabmenu={{category}}">{{ page_number }}</a>
+```
+
+마지막으로는 views.py 에서 해당 순서대로 코드를 추가 할 수 있도록 설계를 했습니다.
+
+```python
+def index(request):
+    category = request.GET.get("tabmenu")
+
+    # 카테고리
+    if category is None or category == "on" or category == "None":
+        category_studies = Study.objects.all().order_by("-pk")
+    else:
+        category_studies = Study.objects.filter(category=category).order_by("-pk")
+
+    # 검색
+    search = request.GET.get("search")
+    if search is not None and search != "None":
+        studies = Study.objects.all()
+        search_lists = studies.filter(
+            Q(title__icontains=search) | Q(desc__icontains=search)
+        )
+        category_studies = category_studies & search_lists
+    # 페이지 네이션 코드
+    page_number = request.GET.get("page")
+    paginator = Paginator(category_studies, 8)
+    page_list = paginator.get_page(page_number)
+
+    context = {
+        "category_studies": category_studies,
+        "page_list": page_list,
+        "category": category,
+        "search": search,
+    }
+
+    return render(request, "studies/complete/study_index.html", context)
+```
+
+
+
+
+
+
+
+
 
 
 
