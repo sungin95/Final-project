@@ -301,13 +301,76 @@ def index(request):
 
 
 
-
-
 #### info(가입페이지) & detail(멤버 활동 페이지)
 
-스터디를 운영한다면 등록된 멤버만 사용이 가능해야 하니까 페이지를 둘로 나누어야 한다고 생각했습니다. 
+스터디를 운영한다면 등록된 멤버만 사용이 가능해야 하니까 페이지를 둘로 나누어야 한다고 생각했습니다. 우선 유저가 가입되기 전에 스터디를 소개하는 페이지가 필요하고, 유저가 가입되고 활동하는 페이지가 필요했습니다. 
 
-우선 유저가 가입되기 전에 스터디를 소개하는 페이지가 필요하고, 유저가 가입되고 활동하는 페이지가 필요했습니다. 
+info 페이지는 모두가 볼 수 있는 페이지이고 study에 대한 정보를 한눈에 볼 수 있게 설계를 했습니다. 
+
+detail 페이지는 멤버들이 활동하는 공간으로 스터디에서 진행하는 할일 목록을 보여줘야 했고, 반장에게는 현재 멤버는 아니면서 가입은 신청한 사람의 목록을 보여주도록 설계를 했습니다. 
+
+##### 인증
+
+동시에 detail페이지는 멤버들만 들어올 수 있게 해야 했기 때문에 인증기능을 넣었습니다. 인증은 프론트에서 한번, 백에서 한번 진행을 했습니다. 
+
+```python 
+# 백에서 
+study_ = get_object_or_404(Study, pk=study_pk)
+# 로그인한 유저가 스터디 가입신청 목록에 있는지
+if request.user in study_.participated.all():
+    # 스터디가 로그인 유저를 멤버로 받아 들였는지
+    if study_ in request.user.join_study.all():
+        ...
+        ...
+        ...
+        return render(request, "studies/complete/study_detail.html", context)
+    
+messages.error(request, "인증된 유저만 접근 할 수 있습니다.")
+return redirect("studies:index")
+```
+
+
+
+프론트에서는 장고 템플릿에서 제공하는 if문을 활용하여 링크(a태그)를 바꾸어 주는 방식으로 구분을 주었습니다. 
+
+```html
+<!-- index페이지 -->
+<div class="study-footer">
+    {% if request.user in study.participated.all %}
+    	{% if study in request.user.join_study.all %}
+    		<a href="{% url 'studies:detail' study.pk %}" class="join-btn">진입하기</a>
+	    {% else %}
+    		{% if study.max_people == study.member_number %}
+			    <a href="{% url 'studies:info' study.pk %}" class="join-btn">자리가 없어요</a>
+		    {% else %}
+			    <a href="{% url 'studies:info' study.pk %}" class="join-btn">가입신청중</a>
+		    {% endif %}
+	    {% endif %}
+    {% else %}
+    	{% if study.max_people == study.member_number %}
+		    <a href="{% url 'studies:info' study.pk %}" class="join-btn">자리가 없어요</a>
+	    {% else %}
+		    <a href="{% url 'studies:info' study.pk %}" class="join-btn">가입하기</a>
+	    {% endif %}
+    {% endif %}
+</div>
+```
+
+이때 좀 더 자세히 표현 해 주었으면 좋겠다는 의견이 있어서 최대한 다양하게 보여 줄 수 있도록 설정을 했습니다. 
+
+진입하기 => detail페이지 바로 가기
+
+자리가 없어요 => info페이지 들어가기, 멤버수가 초과시 뜨도록 설정(들어갈 수는 있지만 신청은 불가하도록 설정)
+
+가입 신청중 => info페이지 들어가기, 가입하기 누른 상태
+
+가입 => info페이지 들어가기
+
+
+
+##### 수락과 거절
+
+
 
 
 
