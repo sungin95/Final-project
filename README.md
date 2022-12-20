@@ -205,6 +205,12 @@
 
 #### index(스터디방 목록 페이지)
 
+[planT index페이지](http://plan-t.site/studies/)
+
+[깃허브 index HTML](https://github.com/sungin95/Final-project/blob/main/templates/studies/complete/study_index.html)
+
+[깃허브 studies views.py](https://github.com/sungin95/Final-project/blob/main/studies/views.py)
+
 목록을 내타낼때 카테고리, 검색, 페이지 네이션 3가지 종류로 나타냈습니다. 
 
 이 셋은 모두 주소창에 띄는 입풋 값을 통하여 나타나게 됩니다. 그런데 무작정 이 셋을 넣고 보니 검색을 하면 카테고리가 사라지고 페이지 네이션을 누르면 검색과 카테고리가 사라지는 문제가 발생하였습니다. 
@@ -221,11 +227,15 @@
 <input type="text" name="tabmenu" value="{{category}}" style="display: none;">
 ```
 
+
+
 페이지 네이션은 모두를 고려해 주기 위해 현재페이지에서 아래의 3개의 값을 다시 불러오도록 설계를 했습니다. 
 
 ```html
 <a class="page-link" href="?page={{ page_number }}&search={{search}}&tabmenu={{category}}">{{ page_number }}</a>
 ```
+
+
 
 마지막으로는 views.py 에서 해당 순서대로 코드를 추가 할 수 있도록 설계를 했습니다.
 
@@ -264,9 +274,40 @@ def index(request):
 
 
 
+#### 스터디 가입신청, 수락과 거절(반장)
+
+[깃허브 studies views.py](https://github.com/sungin95/Final-project/blob/main/studies/views.py)
+
+258~385
+
+스터디 가입과 수락을 만들때 가장 어려웠던건 어떻게 모델링을 짤 것인가 였습니다. 이때 생각이 난게 각 유저가 여러개의 스터디에 대하여 가입 신청을 할 수 있고, 스터디도 여러 유저를 받을 수 있다고 생각해 `ManyToManyField`를 사용하자 생각했습니다. 비슷한 모델로는 User간의 팔로우를 생각했고, 한쪽이 팔로우를 누르면 가입, 상대편도 맞팔을 해 주면 수락으로 만들면 되겠다고 생각을 했습니다. 
+
+팔로우 개념으로 스터디 만듬
+
+|        | 한쪽만 | 서로 |
+| :----: | :----: | :--: |
+| 팔로우 | 팔로우 | 맞팔 |
+| 스터디 |  가입  | 수락 |
+
+이걸 위해 `Study`에서 `participated`라는 가입 신청한 인원을 받는 필드를 만들고, `User`에서 `join_study`이라는 가입된 스터디 목록을 나타내는 필드를 만들었습니다. 예시를 들면
+
+| Study - participated (가입신청) |      | User - join_study (수락) |
+| :-----------------------------: | ---- | :----------------------: |
+|             A(반장)             |      |         A(반장)          |
+|             B(멤버)             |      |         B(멤버)          |
+|           C(가입신청)           |      |   (C만 목록에서 보임)    |
+
+위 표 처럼 반장은 자동으로 양쪽에 생성되도록 하고, B 처럼 가입신청후 수락까지 받으면 멤버, C처럼 가입 신청만 한 상태면 수락 목록에서만 보이도록 설계를 했습니다. 
 
 
 
+
+
+#### info(가입페이지) & detail(멤버 활동 페이지)
+
+스터디를 운영한다면 등록된 멤버만 사용이 가능해야 하니까 페이지를 둘로 나누어야 한다고 생각했습니다. 
+
+우선 유저가 가입되기 전에 스터디를 소개하는 페이지가 필요하고, 유저가 가입되고 활동하는 페이지가 필요했습니다. 
 
 
 
