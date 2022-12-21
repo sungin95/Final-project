@@ -384,6 +384,33 @@ return redirect("studies:index")
 
 
 
+##### studies_Todos 생성
+
+todos는 반장이 생성하면 공유하는 형태로 만들고 싶었습니다. 그래서 멤버를 조회하는 코드를 짜고 for문을 이용해 반복하고 user_id를 각각 멤버로 하게 코드를 만들었습니다. 처음에는 save()를 반복하면 생성이 될 거라고 생각을 했는데. 생성은 안되고 user_id만 바뀌어서 생성되는 시점이 `todoForm = StudyTodosForm(request.POST)`가 아닐까 생각을 해서 이 부분을 반복해서 문제를 해결 했습니다. 
+
+```python
+# 가입된 멤버 조회
+joined_member = []
+for user in study.participated.all():
+    for studyy in user.join_study.all():
+        if studyy.pk == study_pk:
+            joined_member.append(user)
+            break
+
+# 가입된 멤버 각각 생성
+for userr in joined_member:
+    todoForm = StudyTodosForm(request.POST)
+
+    if todoForm.is_valid() and study.owner == request.user:
+        todo = todoForm.save(commit=False)
+        todo.study_pk = study
+        todo.user_id = userr
+        todo.management_pk = study_todos_management
+        todo.save()
+```
+
+
+
 #### 수락과 탈퇴
 
 ##### 추후 기능 확대를 대비(현재: 수락(반장), 탈퇴(팀원),  추후: 초대(반장),  강퇴(반장))
