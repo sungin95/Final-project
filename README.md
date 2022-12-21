@@ -10,6 +10,14 @@
 
 <br>
 
+## 최종프로젝트 경진대회 최우수상
+
+총 22팀중
+
+최우수 3개팀
+
+
+
 ## ✔ What is Plan T?
 
 ---
@@ -64,13 +72,13 @@
 
 ---
 
-|                                                                             | 이름  | 팀   | 역할  | 깃허브 주소                         |
-|:---------------------------------------------------------------------------:|:---:|:---:|:---:| ------------------------------ |
-| <img src="assets/2022-12-14-17-15-23-image.png" title="" alt="" width="56"> | 오채현 | 팀원  | 프론트 | https://github.com/chaehyun-oh |
-| <img src="assets/2022-12-14-17-20-50-image.png" title="" alt="" width="56"> | 류진숙 | 팀원  | 프론트 | https://github.com/wdahlia     |
-| <img title="" src="assets/2022-12-14-17-16-59-image.png" alt="" width="61"> | 이동근 | 팀원  | 백   | https://github.com/qlghwp123   |
-| <img title="" src="assets/2022-12-14-17-18-28-image.png" alt="" width="53"> | 이성인 | 팀원  | 백   | https://github.com/sungin95    |
-| <img src="assets/2022-12-14-17-23-03-image.png" title="" alt="" width="61"> | 이은진 | 팀원  | 백   | https://github.com/OIIUOI      |
+|                                                              |  이름  |  팀  |  역할  | 깃허브 주소                    |
+| :----------------------------------------------------------: | :----: | :--: | :----: | ------------------------------ |
+| <img src="assets/2022-12-14-17-15-23-image.png" title="" alt="" width="56"> | 오채현 | 팀원 | 프론트 | https://github.com/chaehyun-oh |
+| <img src="assets/2022-12-14-17-20-50-image.png" title="" alt="" width="56"> | 류진숙 | 팀원 | 프론트 | https://github.com/wdahlia     |
+| <img title="" src="assets/2022-12-14-17-16-59-image.png" alt="" width="61"> | 이동근 | 팀원 | 백엔드 | https://github.com/qlghwp123   |
+| <img title="" src="assets/2022-12-14-17-18-28-image.png" alt="" width="53"> | 이성인 | 팀원 | 백엔드 | https://github.com/sungin95    |
+| <img src="assets/2022-12-14-17-23-03-image.png" title="" alt="" width="61"> | 이은진 | 팀원 | 백엔드 | https://github.com/OIIUOI      |
 
 <br>
 
@@ -452,7 +460,7 @@ elif owner__ == False:
 
 
 
-##### 후처리
+##### 후처리(스터디 수락 or 탈퇴시 studies_todos 어떻게 할 것인지)
 
 기능을 완성하고 버그 테스트를 하면서 스터디 탈퇴가 정상적으로 작동하나 확인하는 도중, 스터디에 탈퇴를 했지만 여전히 Studies_Todos가 남아 있는것을 확인했다. 
 
