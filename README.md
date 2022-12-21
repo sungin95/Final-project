@@ -175,7 +175,7 @@
 
 
 
-### 제 입장(백엔드)에서 바라본 개발을 진행하면서 어려웠던 점
+## 제 입장(백엔드, 이성인)에서 바라본 개발을 진행하면서 어려웠던 점
 
 ### Todos
 
@@ -274,7 +274,7 @@ def index(request):
 
 
 
-#### 스터디 가입신청, 수락과 거절(반장)
+#### 스터디 가입신청, 수락과 거절(반장) (개념)
 
 [깃허브 studies views.py](https://github.com/sungin95/Final-project/blob/main/studies/views.py)
 
@@ -301,11 +301,13 @@ def index(request):
 
 
 
-#### info(가입페이지) & detail(멤버 활동 페이지)
+#### info(가입페이지)
 
 스터디를 운영한다면 등록된 멤버만 사용이 가능해야 하니까 페이지를 둘로 나누어야 한다고 생각했습니다. 우선 유저가 가입되기 전에 스터디를 소개하는 페이지가 필요하고, 유저가 가입되고 활동하는 페이지가 필요했습니다. 
 
 info 페이지는 모두가 볼 수 있는 페이지이고 study에 대한 정보를 한눈에 볼 수 있게 설계를 했습니다. 
+
+####  detail(멤버 활동 페이지)
 
 detail 페이지는 멤버들이 활동하는 공간으로 스터디에서 진행하는 할일 목록을 보여줘야 했고, 반장에게는 현재 멤버는 아니면서 가입은 신청한 사람의 목록을 보여주도록 설계를 했습니다. 
 
@@ -369,6 +371,98 @@ return redirect("studies:index")
 
 
 ##### 수락과 거절
+
+- 반장만 가능
+  - 수락과 거절은 기본적으로 반장만 가능합니다. 이걸 위해 HTML템플릿에서 if문을 활용해 반장만 볼 수 있게 하였고, views.py에서도 request.user가 반장인지 아닌지 확인하는 코드를 추가 했습니다. 
+
+- POST사용 이유
+  - 그리고 나쁜 유저가 주소창을 통하여 반장 대신 수락 or 거절을 할 수 있다고 생각했습니다. 이걸 방지하기 위해 GET이 아닌 `request.method == "POST"`를 추가했습니다. 
+
+- 비동기 
+  - 또한 수락 버튼 하나 클릭하고 페이지가 다시 시작되는 것을 막기 위해 비동기로 진행을 하였습니다. 
+  - 목록이 for 문으로 반복이 되기 때문에  변수를 정의해 줄때 id가 아닌 class를 통하여 진행을 하였고, `querySelectorAll`와 `for...of...`을 사용하여 이벤트가 발생하면 목록을 모두 체크하는 방식을 택했습니다. 
+
+
+
+#### 수락과 탈퇴
+
+##### 추후 기능 확대를 대비(현재: 수락(반장), 탈퇴(팀원),  추후: 초대(반장),  강퇴(반장))
+
+[깃허브 studies views.py](https://github.com/sungin95/Final-project/blob/main/studies/views.py)
+
+294 ~385
+
+저는 이 수락과 탈퇴 기능을 만들때, 나중에 초대기능과 강퇴기능을 만들 수 있다고 생각했습니다. 이때 문제가 된다고 생각했던 부분이 탈퇴와 강퇴였습니다. 이 두 기능은 User - join_study 에서 해당 스터디를 삭제하는 기능인데. 탈퇴는 삭제를 하고 해당 유저를 스터디방에서 나가게 해야 했고, 강퇴는 반장이 하는 기능으로 비동기로 처리를 해야 했습니다. 물론, 따로따로 만들어서 문제를 해결 할 수도 있었지만, 같은 코드가 반복되는 형태를 피하고 싶었습니다. 
+
+고민을 하다가 결국 이걸 클릭한 주체가 반장이라면 현재페이지를 유지하고, 팀원이라면 이 페이지를 나가게 만들면 된다고 생각을 했습니다. 
+
+```python
+# 반장은 owner, 멤버는 not owner, 나쁜 사용자는 redirect
+if request.user == study.owner:
+    owner__ = True
+elif request.user == user:
+    owner__ = False
+else:
+    # 제3의 유저를 걸려내기 위해 추가 제작
+    messages.error(request, "잘못된 요청입니다.")
+    return redirect("studies:index")
+...
+...
+...
+# 반장이면 페이지 유지
+if owner__ == True:
+    context = {
+        "member_number": member_number,
+        "studyJoinNumber": studyJoinNumber,
+        "check": True,
+    }
+    return JsonResponse(context)
+# 멤버면 index로 보냄
+elif owner__ == False:
+    # messages.success(request, "정상적으로 탈퇴가 되었습니다.")
+    return redirect("studies:index")
+```
+
+
+
+##### 후처리
+
+기능을 완성하고 버그 테스트를 하면서 스터디 탈퇴가 정상적으로 작동하나 확인하는 도중, 스터디에 탈퇴를 했지만 여전히 Studies_Todos가 남아 있는것을 확인했다. 
+
+이걸 통해 2가지를 생각했다. 스터디 **탈퇴시** 관련 Studies_Todos를 **삭제**를 해야한다. 그리고 스터디 **가입시** 진행중인 Studies_Todos를 **생성**해 줘야 한다. 그래서 아래 코드 추가
+
+```python
+today = str(datetime.now())[:10]
+# 수락과 동시에 아직 안끝난 studies_todos 생성
+study_todos = StudyTodos.objects.filter(
+    user_id=study.owner,
+    study_pk=study,
+    end__gte=today,
+)
+for study_todo in study_todos:
+    StudyTodos.objects.create(
+        study_pk=study,
+        management_pk=study_todo.management_pk,
+        user_id=user,
+        title=study_todo.title,
+        content=study_todo.content,
+        start=study_todo.start,
+        end=study_todo.end,
+    )
+```
+
+```python 
+# 스터디 관련 todos 삭제
+delete_studies_todos = StudyTodos.objects.filter(
+    user_id=user,
+    study_pk=study,
+)
+for delete_studies_todo in delete_studies_todos:
+    delete_studies_todo.delete()
+    #
+```
+
+
 
 
 

@@ -277,7 +277,7 @@ def join(request, study_pk):
 
 # 반장이 가입신청 인원 수락 거절(가입 신청기록 삭제)
 def refusal(request, study_pk, user_pk):
-    if request.method:
+    if request.method == "POST":
         study = get_object_or_404(Study, pk=study_pk)
         user = get_object_or_404(get_user_model(), pk=user_pk)
         # 오직 반장만 거절 가능
